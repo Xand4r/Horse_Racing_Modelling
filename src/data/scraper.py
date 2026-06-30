@@ -2,6 +2,8 @@ import requests
 from bs4 import BeautifulSoup
 import csv
 import time
+import os
+import sys
 
 # Paths are relative to the repository root, so run this script from there
 # (e.g. `python src/data/scraper.py`).
@@ -35,7 +37,7 @@ def scrape_dates() ->  None:
     select = soup.find(id = "selectId")
 
     for option in select.find_all("option"):
-        val = option.get("value")
+        val = option.get_text(strip=True)
         if not val:
             continue
         val = convert_date(val)
@@ -89,8 +91,7 @@ if __name__ == "__main__":
     #
     #   python src/data/scraper.py
     #       read dates.csv -> save raw HTML into src/data/raw_racecards/
-    import sys
-    if len(sys.argv) > 1 and sys.argv[1] == "dates":
+    if (len(sys.argv) > 1 and sys.argv[1] == "dates") or not os.path.exists(DATES_CSV):
         scrape_dates()
     else:
         scrape_data()
